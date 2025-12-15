@@ -7,6 +7,7 @@ A production-ready Django badminton court booking system with intelligent pricin
 ## 🎯 Overview
 
 **Badminton Court Pro** handles concurrent bookings, dynamic pricing, equipment rental, coach scheduling, and waitlist notifications using Django and Django REST Framework.
+<img width="1654" height="834" alt="image" src="https://github.com/user-attachments/assets/5f6fa4ca-c1ea-463a-bd03-a84f89b17330" />
 
 ### Key Highlights
 
@@ -51,6 +52,7 @@ Services Layer (Business Logic)
     ↓
 Models Layer (Database Schema)
 ```
+<img width="1120" height="869" alt="image" src="https://github.com/user-attachments/assets/6fe5ec75-64ec-4f81-8551-242656767825" />
 
 ### Core Models
 
@@ -158,6 +160,7 @@ When `DEBUG=False`: SSL redirect, secure cookies, HSTS, XSS filter, X-Frame-Opti
 ---
 
 ## 🔍 How It Works
+<img width="1111" height="875" alt="image" src="https://github.com/user-attachments/assets/fcf9cf5a-eb11-4ff1-b4e5-86ce69254f02" />
 
 ### Dynamic Pricing Example
 
@@ -170,8 +173,12 @@ Base Price: ₹500
 + Coach: ₹800
 = Total: ₹2,265
 ```
+<img width="1302" height="792" alt="image" src="https://github.com/user-attachments/assets/5cb09a07-521e-4b77-aa93-38260ce23cc5" />
 
 ### Waitlist Flow
+<img width="1383" height="865" alt="image" src="https://github.com/user-attachments/assets/f81a7f34-fbd3-46aa-9aa4-d851cc83206e" />
+<img width="1617" height="853" alt="image" src="https://github.com/user-attachments/assets/638e7dc9-431f-4068-8c60-ba608446ae73" />
+<img width="946" height="702" alt="image" src="https://github.com/user-attachments/assets/abad0ca0-a45a-4d8f-957d-c35eea35fc16" />
 
 ```python
 @transaction.atomic
@@ -232,42 +239,6 @@ GET /api/notifications/count/
 ```http
 POST /api/notifications/<id>/mark-read/
 ```
-
----
-
-## 🚢 Deployment (Render)
-
-### Steps
-
-1. **Create PostgreSQL Database** on Render
-2. **Create Web Service**, connect GitHub repo
-3. **Set Environment Variables**:
-   ```
-   SECRET_KEY=<new-key>
-   DEBUG=False
-   DATABASE_URL=<postgres-url>
-   ALLOWED_HOSTS=<app>.onrender.com
-   ADMIN_CREATION_SECRET=<secret>
-   DEFAULT_ADMIN_USERNAME=admin
-   DEFAULT_ADMIN_EMAIL=admin@domain.com
-   DEFAULT_ADMIN_PASSWORD=<password>
-   ```
-4. **Deploy** (build.sh → migrations, static files; start.sh → Gunicorn)
-5. **Create Admin**: Visit `https://<app>.onrender.com/create-admin/?secret=<ADMIN_CREATION_SECRET>`
-
-### Build Script
-```bash
-pip install -r requirements.txt
-python manage.py collectstatic --no-input
-python manage.py migrate
-```
-
-### Start Script
-```bash
-gunicorn booking_system.wsgi:application --bind 0.0.0.0:$PORT
-```
-
----
 
 ## 📚 Learning Resources
 
