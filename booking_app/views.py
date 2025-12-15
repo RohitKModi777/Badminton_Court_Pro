@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
@@ -6,6 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.http import JsonResponse, HttpResponse
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -18,6 +20,60 @@ from .services.availability_service import check_court_availability
 from .services.booking_service import create_booking, cancel_booking, join_waitlist
 from .models import WaitlistEntry
 from .services.pricing_service import PricingEngine
+
+# --- Admin Creation View ---
+
+def create_first_admin(request):
+    """Secure admin creation using environment variables"""
+    
+    # Check secret key for security
+    expected_secret = os.getenv('ADMIN_CREATION_SECRET')
+    if not expected_secret:
+        return HttpResponse('❌ ADMIN_CREATION_SECRET not configured', status=500)
+    
+    provided_secret = request.GET.get('secret', '')
+    if provided_secret != expected_secret:
+        return HttpResponse('❌ Unauthorized: Invalid secret key', status=401)
+    
+    User = get_user_model()
+    
+    # Check if admin already exists
+    if User.objects.filter(is_superuser=True).exists():
+        return HttpResponse(
+            '❌ Admin user already exists. <br><br>'
+            '<a href="/admin/">Go to Admin Panel</a>'
+        )
+    
+    # Get credentials from environment variables
+    admin_username = os.getenv('DEFAULT_ADMIN_USERNAME', 'admin')
+    admin_email = os.getenv('DEFAULT_ADMIN_EMAIL')
+    admin_password = os.getenv('DEFAULT_ADMIN_PASSWORD')
+    
+    # Validate required environment variables
+    if not admin_email or not admin_password:
+        return HttpResponse(
+            '❌ DEFAULT_ADMIN_EMAIL and DEFAULT_ADMIN_PASSWORD must be set in environment variables',
+            status=500
+        )
+    
+    try:
+        # Create the superuser
+        User.objects.create_superuser(
+            username=admin_username,
+            email=admin_email,
+            password=admin_password
+        )
+        
+        return HttpResponse(
+            f'✅ Admin user created successfully!<br><br>'
+            f'Username: <strong>{admin_username}</strong><br>'
+            f'Email: <strong>{admin_email}</strong><br><br>'
+            f'<a href="/admin/">Go to Admin Panel</a><br><br>'
+            f'<small>Password was set from environment variables</small>'
+        )
+        
+    except Exception as e:
+        return HttpResponse(f'❌ Error creating admin: {str(e)}', status=500)
 
 # --- Template Views ---
 
@@ -117,7 +173,6 @@ def dashboard(request):
     
     context = {
         'bookings': bookings,
-        'active_count': active_count,
         'active_count': active_count,
         'total_spent': total_spent,
         'waitlist': WaitlistEntry.objects.filter(user=request.user).order_by('-created_at')
