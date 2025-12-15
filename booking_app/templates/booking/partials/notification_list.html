@@ -1,0 +1,26 @@
+{% if notifications %}
+{% for n in notifications %}
+<div class="notification-item p-3 border-bottom border-light-subtle {% if not n.is_read %}bg-soft-primary{% endif %}"
+    id="notification-{{ n.id }}">
+    <div class="d-flex justify-content-between align-items-start">
+        <div class="me-2">
+            <p class="mb-1 small text-white">{{ n.message }}</p>
+            <small class="text-muted" style="font-size: 0.75rem;">
+                <i class="fa-regular fa-clock me-1"></i>{{ n.created_at|timesince }} ago
+            </small>
+        </div>
+        {% if n.slot %}
+        <a href="{% url 'notification_book' n.id %}" class="btn btn-sm btn-primary py-0 px-2"
+            style="font-size: 0.75rem;">
+            Book
+        </a>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+{% else %}
+<div class="text-center p-4 text-muted">
+    <i class="fa-regular fa-bell-slash fa-2x mb-2 opacity-50"></i>
+    <p class="small mb-0">No new notifications</p>
+</div>
+{% endif %}

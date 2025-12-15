@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-5">
+        <div class="glass-card p-5 animate-fade-in">
+            <div class="text-center mb-4">
+                <i class="fa-solid fa-user-circle fa-4x text-primary mb-3"></i>
+                <h2 class="fw-bold">Welcome Back</h2>
+                <p class="text-muted">Login to manage your bookings</p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="id_username" class="form-label">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0 text-muted"
+                            style="border-color: rgba(255,255,255,0.1);">
+                            <i class="fa-solid fa-user"></i>
+                        </span>
+                        <input type="text" name="username" class="form-control border-start-0 ps-0" id="id_username"
+                            required autofocus placeholder="Enter your username">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="id_password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0 text-muted"
+                            style="border-color: rgba(255,255,255,0.1);">
+                            <i class="fa-solid fa-lock"></i>
+                        </span>
+                        <input type="password" name="password" class="form-control border-start-0 ps-0" id="id_password"
+                            required placeholder="Enter your password">
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        Login <i class="fa-solid fa-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </form>
+
+            <div class="text-center mt-4">
+                <p class="mb-0 text-muted">Don't have an account? <a href="{% url 'signup' %}"
+                        class="text-accent text-decoration-none fw-bold" style="color: var(--accent-color);">Sign up</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card glass-card border-0 shadow-lg">
+            <div class="card-body p-5">
+                <h2 class="text-center mb-4 fw-bold text-white">Select a Date</h2>
+                <form action="{% url 'booking_wizard' %}" method="get">
+                    <div class="mb-4">
+                        <label for="date" class="form-label text-white-50">Date</label>
+                        <input type="date" class="form-control form-control-lg bg-dark text-white border-secondary"
+                            id="date" name="date" required min="{{ today|date:'Y-m-d' }}">
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            Next <i class="fa-solid fa-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Set min date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('date').setAttribute('min', today);
+</script>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-6">
+        <div class="glass-card p-5 animate-fade-in">
+            <div class="text-center mb-4">
+                <i class="fa-solid fa-user-plus fa-4x text-success mb-3"></i>
+                <h2 class="fw-bold">Create Account</h2>
+                <p class="text-muted">Join us to start booking courts</p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div class="mb-3">
+                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                    <div class="input-group">
+                        {% if 'password' in field.name %}
+                        <span class="input-group-text bg-transparent border-end-0 text-muted"
+                            style="border-color: rgba(255,255,255,0.1);">
+                            <i class="fa-solid fa-lock"></i>
+                        </span>
+                        {% else %}
+                        <span class="input-group-text bg-transparent border-end-0 text-muted"
+                            style="border-color: rgba(255,255,255,0.1);">
+                            <i class="fa-solid fa-user"></i>
+                        </span>
+                        {% endif %}
+                        <!-- Render field manually to add class, or use widget tweaks in form. 
+                             Django default rendering is hard to style perfectly without widget tweaks.
+                             We'll use a simple filter or just render field and add class via JS or accept default.
+                             For now, let's try to wrap it nicely. -->
+                        {{ field }}
+                    </div>
+                    {% if field.help_text %}
+                    <div class="form-text text-muted small">{{ field.help_text }}</div>
+                    {% endif %}
+                    {% for error in field.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        Sign Up <i class="fa-solid fa-user-check ms-2"></i>
+                    </button>
+                </div>
+            </form>
+
+            <div class="text-center mt-4">
+                <p class="mb-0 text-muted">Already have an account? <a href="{% url 'login' %}"
+                        class="text-accent text-decoration-none fw-bold" style="color: var(--accent-color);">Login</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Add Bootstrap classes to Django form fields
+    document.querySelectorAll('input').forEach(input => {
+        input.classList.add('form-control');
+        input.classList.add('border-start-0');
+        input.classList.add('ps-0');
+    });
+</script>
+{% endblock %}

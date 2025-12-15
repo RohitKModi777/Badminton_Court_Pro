@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center animate-fade-in" style="min-height: 80vh;">
+    <div class="col-lg-6 mb-5 mb-lg-0">
+        <h1 class="display-4 mb-4 fw-bold">Smash Your Way to Victory! 🏸</h1>
+        <p class="lead mb-5 text-secondary">
+            Experience world-class indoor and outdoor badminton courts.
+            Book instantly, rent pro equipment, and train with expert coaches.
+        </p>
+
+        <div class="d-flex gap-3">
+            <a href="#booking-card" class="btn btn-primary btn-lg px-4">
+                <i class="fa-solid fa-calendar-check me-2"></i> Book Now
+            </a>
+            <a href="{% url 'dashboard' %}" class="btn btn-outline-light btn-lg px-4">
+                <i class="fa-solid fa-user me-2"></i> My Bookings
+            </a>
+        </div>
+
+        <div class="row mt-5 g-4">
+            <div class="col-6">
+                <div class="d-flex align-items-center">
+                    <div class="rounded-circle bg-success bg-opacity-25 p-3 me-3">
+                        <i class="fa-solid fa-check text-success fa-xl"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-0">Instant Confirmation</h5>
+                        <small class="text-muted">No waiting time</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="d-flex align-items-center">
+                    <div class="rounded-circle bg-danger bg-opacity-25 p-3 me-3">
+                        <i class="fa-solid fa-fire text-danger fa-xl"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-0">Pro Equipment</h5>
+                        <small class="text-muted">Yonex & Li-Ning</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5 offset-lg-1">
+        <div id="booking-card" class="glass-card p-4 p-md-5">
+            <div class="text-center mb-4">
+                <h3 class="fw-bold">Check Availability</h3>
+                <p class="text-muted small">Select a date to see available slots</p>
+            </div>
+
+            <form action="{% url 'booking_wizard' %}" method="get">
+                <div class="mb-4">
+                    <label for="date" class="form-label">Select Date</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0 text-muted"
+                            style="border-color: rgba(255,255,255,0.1);">
+                            <i class="fa-solid fa-calendar-days"></i>
+                        </span>
+                        <input type="date" id="date" name="date" class="form-control border-start-0 ps-0" required
+                            min="{{ now|date:'Y-m-d' }}">
+                    </div>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        Find Courts <i class="fa-solid fa-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Set min date to today
+    const dateInput = document.getElementById('date');
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.min = today;
+    dateInput.value = today;
+</script>
+{% endblock %}

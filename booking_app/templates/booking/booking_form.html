@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row animate-fade-in">
+    <div class="col-lg-8">
+        <div class="glass-card p-4 p-md-5 mb-4">
+            <div class="d-flex align-items-center mb-4">
+                <div class="rounded-circle bg-primary p-3 me-3 text-white">
+                    <i class="fa-solid fa-calendar-check fa-xl"></i>
+                </div>
+                <div>
+                    <h2 class="mb-0 fw-bold">Complete Your Booking</h2>
+                    <p class="text-muted mb-0">Date: <span class="text-white fw-bold">{{ date }}</span></p>
+                </div>
+            </div>
+
+            <form action="{% url 'confirm_booking' %}" method="post" id="booking-form">
+                {% csrf_token %}
+                <input type="hidden" name="date" value="{{ date }}">
+
+                <!-- Trigger price update when any of these change -->
+                <div hx-get="{% url 'calculate_price_htmx' %}" hx-target="#price-breakdown" hx-trigger="change"
+                    hx-include="[name='court'], [name='time'], [name='equipment'], [name='coach'], [name='date']">
+
+                    <!-- Step 1: Time Slot -->
+                    <div class="mb-4">
+                        <label class="form-label"><i class="fa-regular fa-clock me-2"></i>Select Time Slot</label>
+                        <select name="time" class="form-select form-select-lg bg-dark text-white border-secondary"
+                            required>
+                            <option value="" class="bg-dark text-white">-- Select Time --</option>
+                            {% for t in time_slots %}
+                            <option value="{{ t|date:'H:i' }}" class="bg-dark text-white">{{ t|date:'h:i A' }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Step 2: Court -->
+                    <div class="mb-4">
+                        <label class="form-label"><i class="fa-solid fa-table-tennis-paddle-ball me-2"></i>Select
+                            Court</label>
+                        <div class="row g-3">
+                            {% for court in courts %}
+                            <div class="col-md-6">
+                                <input type="radio" class="btn-check" name="court" id="court_{{ court.id }}"
+                                    value="{{ court.id }}" required autocomplete="off">
+                                <label
+                                    class="btn btn-outline-light w-100 p-3 text-start d-flex justify-content-between align-items-center"
+                                    for="court_{{ court.id }}">
+                                    <div>
+                                        <div class="fw-bold">{{ court.name }}</div>
+                                        <small class="text-muted">{{ court.get_court_type_display }}</small>
+                                    </div>
+                                    {% if court.court_type == 'INDOOR' %}
+                                    <i class="fa-solid fa-warehouse text-info"></i>
+                                    {% else %}
+                                    <i class="fa-solid fa-sun text-warning"></i>
+                                    {% endif %}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Equipment -->
+                    <div class="mb-4">
+                        <label class="form-label"><i class="fa-solid fa-shirt me-2"></i>Add Equipment (Optional)</label>
+                        <div class="row g-3">
+                            {% for eq in equipment %}
+                            <div class="col-md-6">
+                                <div class="form-check glass-card p-3 ps-5">
+                                    <input class="form-check-input" type="checkbox" name="equipment" value="{{ eq.id }}"
+                                        id="eq_{{ eq.id }}" style="transform: scale(1.2); margin-left: -1.5em;">
+                                    <label class="form-check-label w-100" for="eq_{{ eq.id }}">
+                                        <div class="d-flex justify-content-between">
+                                            <span>{{ eq.name }}</span>
+                                            <span class="text-accent">+₹{{ eq.rent_price_per_hour }}</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Coach -->
+                    <div class="mb-4">
+                        <label class="form-label"><i class="fa-solid fa-user-tie me-2"></i>Add Coach (Optional)</label>
+                        <select name="coach" class="form-select bg-dark text-white border-secondary">
+                            <option value="" class="bg-dark text-white">-- No Coach --</option>
+                            {% for coach in coaches %}
+                            <option value="{{ coach.id }}" class="bg-dark text-white">{{ coach.name }} (+₹{{coach.hourly_rate }}/hr)</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 mt-5">
+                    <button type="submit" id="submit-btn" class="btn btn-success btn-lg py-3 fw-bold shadow-lg">
+                        Confirm Booking <i class="fa-solid fa-check-circle ms-2"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="glass-card p-4 sticky-top animate-fade-in delay-2" style="top: 100px;">
+            <h4 class="mb-4 fw-bold border-bottom pb-2" style="border-color: rgba(255,255,255,0.1) !important;">Price
+                Breakdown</h4>
+            <div id="price-breakdown">
+                <div class="text-center py-4 text-muted">
+                    <i class="fa-solid fa-calculator fa-2x mb-3"></i>
+                    <p>Select options to calculate price.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
