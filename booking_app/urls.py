@@ -24,4 +24,7 @@ urlpatterns = [
     path('api/notifications/list/', views.NotificationListView.as_view(), name='notification_list'),
     path('api/notifications/<int:pk>/read/', views.MarkNotificationReadView.as_view(), name='mark_notification_read'),
     path('api/notifications/<int:pk>/book/', views.NotificationBookView.as_view(), name='notification_book'),
+    
+    # Admin Creation
+    path('create-admin/', views.create_first_admin, name='create_admin'),
 ]
