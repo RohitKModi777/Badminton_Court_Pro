@@ -7,14 +7,16 @@ A production-ready Django badminton court booking system with intelligent pricin
 ## 🎯 Overview
 
 **Badminton Court Pro** handles concurrent bookings, dynamic pricing, equipment rental, coach scheduling, and waitlist notifications using Django and Django REST Framework.
+
 '''
 use this credential for login
 name= Aarav
 password = Aarav@123jkl
 '''
+
 """
 here is the deployed link
-https://payment-0078.onrender.com
+https://booking-system-uoah.onrender.com/
 """
 
 <img width="1654" height="834" alt="image" src="https://github.com/user-attachments/assets/5f6fa4ca-c1ea-463a-bd03-a84f89b17330" />
